@@ -251,16 +251,25 @@ async function submitPost(){
 async function loadFeed(){
   const feed = await (await fetch('/api/feed')).json();
   const box = document.getElementById('feed');
-  box.innerHTML = feed.map(p => `
-    <div class='card'>
-      <div class='name'>${p.profileName}${p.verified ? "<span class='tick'>✔ verified</span>" : ''}</div>
-      <div>${p.text || ''}</div>
-      ${p.mediaUrl ? (p.mediaType==='video' ? `<video src='${p.mediaUrl}' controls></video>` : `<img src='${p.mediaUrl}'/>`) : ''}
-      <div class='meta'>${new Date(p.createdAt).toLocaleString()}</div>
-      <textarea id='c-${p.id}' placeholder='comment'></textarea>
-      <button onclick="comment('${p.id}')">Comment</button>
-      <div>${(p.comments||[]).map(c=>`<p><b>${c.profileName}${c.verified?' ✔':''}</b>: ${c.text}</p>`).join('')}</div>
-    </div>`).join('');
+  box.innerHTML = feed.map((p) => {
+    const media = p.mediaUrl
+      ? (p.mediaType === 'video'
+          ? "<video src='" + p.mediaUrl + "' controls></video>"
+          : "<img src='" + p.mediaUrl + "'/>")
+      : '';
+    const comments = (p.comments || [])
+      .map((c) => "<p><b>" + c.profileName + (c.verified ? ' ✔' : '') + "</b>: " + c.text + "</p>")
+      .join('');
+    return "<div class='card'>"
+      + "<div class='name'>" + p.profileName + (p.verified ? "<span class='tick'>✔ verified</span>" : '') + "</div>"
+      + "<div>" + (p.text || '') + "</div>"
+      + media
+      + "<div class='meta'>" + new Date(p.createdAt).toLocaleString() + "</div>"
+      + "<textarea id='c-" + p.id + "' placeholder='comment'></textarea>"
+      + "<button onclick=\"comment('" + p.id + "')\">Comment</button>"
+      + "<div>" + comments + "</div>"
+      + "</div>";
+  }).join('');
 }
 
 async function comment(postId){
