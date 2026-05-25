@@ -1,0 +1,9 @@
+name = "as-social-feed"
+main = "src/worker.js"
+compatibility_date = "2026-05-25"
+workers_dev = true
+
+[[kv_namespaces]]
+binding = "SOCIAL_KV"
+id = "replace-with-your-kv-namespace-id"
+preview_id = "replace-with-your-kv-preview-id"
